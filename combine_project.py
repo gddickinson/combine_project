@@ -40,17 +40,25 @@ class ProjectCombiner:
             '.toml', '.cfg', '.ini', '.rst', '.sh'
         }
     
+    def _matches_ignore_pattern(self, name):
+        """Check if a name matches any ignore_dirs pattern (supports glob-style *)."""
+        import fnmatch
+        for pattern in self.ignore_dirs:
+            if fnmatch.fnmatch(name, pattern):
+                return True
+        return False
+
     def should_ignore(self, path):
         """Check if a path should be ignored."""
         path = Path(path)
-        
+
         # Check if any parent directory should be ignored
         for parent in path.parents:
-            if parent.name in self.ignore_dirs:
+            if self._matches_ignore_pattern(parent.name):
                 return True
-        
+
         # Check if directory itself should be ignored
-        if path.is_dir() and path.name in self.ignore_dirs:
+        if path.is_dir() and self._matches_ignore_pattern(path.name):
             return True
         
         # Check file extension
@@ -144,9 +152,9 @@ class ProjectCombiner:
             total_files = 0
             
             for root, dirs, files in os.walk(self.project_root):
-                # Remove ignored directories from search
-                dirs[:] = [d for d in dirs if not self.should_ignore(Path(root) / d)]
-                
+                # Remove ignored directories from search (uses glob matching)
+                dirs[:] = [d for d in dirs if not self._matches_ignore_pattern(d)]
+
                 for file in files:
                     filepath = Path(root) / file
                     if self.should_include_file(filepath):
@@ -170,9 +178,9 @@ class ProjectCombiner:
         
         # Collect all files
         for root, dirs, files in os.walk(self.project_root):
-            # Remove ignored directories from search
-            dirs[:] = [d for d in dirs if not self.should_ignore(Path(root) / d)]
-            
+            # Remove ignored directories from search (uses glob matching)
+            dirs[:] = [d for d in dirs if not self._matches_ignore_pattern(d)]
+
             for file in sorted(files):
                 filepath = Path(root) / file
                 if self.should_include_file(filepath):
