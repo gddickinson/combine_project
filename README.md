@@ -60,3 +60,7 @@ combine_project/
 ├── combine_project.py   # ProjectCombiner class + CLI entry point
 └── README.md
 ```
+
+
+---
+*Built with AI assistance from [Claude (Anthropic)](https://claude.com/).*
