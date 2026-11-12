@@ -44,6 +44,12 @@ class ProjectCombiner:
             '.py', '.md', '.txt', '.yml', '.yaml', '.json',
             '.toml', '.cfg', '.ini', '.rst', '.sh'
         }
+
+        # Files without an extension that are included by name
+        self.include_names = {'Makefile', 'Dockerfile', 'requirements', 'LICENSE'}
+
+        # Hidden (dot) names that are not ignored
+        self.hidden_allowed = {'.gitignore', '.env.example'}
     
     def _matches_ignore_pattern(self, name):
         """Check if a name matches any ignore_dirs pattern (supports glob-style *)."""
@@ -94,7 +100,7 @@ class ProjectCombiner:
             return True
         
         # Check if it's a hidden file (starting with .)
-        if path.name.startswith('.') and path.name not in {'.gitignore', '.env.example'}:
+        if path.name.startswith('.') and path.name not in self.hidden_allowed:
             return True
         
         return False
@@ -114,7 +120,7 @@ class ProjectCombiner:
             return True
         
         # Include files without extensions if they're in specific locations
-        if not path.suffix and path.name in {'Makefile', 'Dockerfile', 'requirements', 'LICENSE'}:
+        if not path.suffix and path.name in self.include_names:
             return True
         
         return False
@@ -156,54 +162,58 @@ class ProjectCombiner:
         
         return lines
     
-    def create_structure_file(self):
+    @staticmethod
+    def timestamp():
+        """The 'Generated:' time stamp written into both files."""
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    def count_files(self):
+        """{extension or 'no extension': count} over the files that would be combined."""
+        file_counts = {}
+        for root, dirs, files in os.walk(self.project_root):
+            # Remove ignored directories from search (uses glob matching)
+            dirs[:] = [d for d in dirs if not self._matches_ignore_pattern(d)]
+
+            for file in files:
+                filepath = Path(root) / file
+                if self.should_include_file(filepath):
+                    ext = filepath.suffix if filepath.suffix else 'no extension'
+                    file_counts[ext] = file_counts.get(ext, 0) + 1
+        return file_counts
+
+    def render_structure(self, generated=None):
+        """Text of PROJECT_STRUCTURE.txt (generated: time stamp string, default now)."""
+        generated = generated or self.timestamp()
+        tree_lines = self.generate_tree_structure(self.project_root)
+        out = ['=' * 80 + '\n',
+               f'PROJECT STRUCTURE: {self.project_root.name}\n',
+               f'Generated: {generated}\n',
+               '=' * 80 + '\n\n',
+               '\n'.join(tree_lines),
+               '\n\n',
+               # Count files by type
+               '=' * 80 + '\n',
+               'FILE SUMMARY\n',
+               '=' * 80 + '\n\n']
+        file_counts = self.count_files()
+        for ext, count in sorted(file_counts.items()):
+            out.append(f'{ext}: {count} file(s)\n')
+        out.append(f'\nTotal files: {sum(file_counts.values())}\n')
+        return ''.join(out)
+
+    def create_structure_file(self, generated=None):
         """Create a file with the project structure."""
         output_file = self.output_dir / STRUCTURE_NAME
-        
-        tree_lines = self.generate_tree_structure(self.project_root)
-        
+        text = self.render_structure(generated)
         with open(output_file, 'w', encoding='utf-8') as f:
-            f.write('=' * 80 + '\n')
-            f.write(f'PROJECT STRUCTURE: {self.project_root.name}\n')
-            f.write(f'Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
-            f.write('=' * 80 + '\n\n')
-            
-            f.write('\n'.join(tree_lines))
-            f.write('\n\n')
-            
-            # Count files by type
-            f.write('=' * 80 + '\n')
-            f.write('FILE SUMMARY\n')
-            f.write('=' * 80 + '\n\n')
-            
-            file_counts = {}
-            total_files = 0
-            
-            for root, dirs, files in os.walk(self.project_root):
-                # Remove ignored directories from search (uses glob matching)
-                dirs[:] = [d for d in dirs if not self._matches_ignore_pattern(d)]
-
-                for file in files:
-                    filepath = Path(root) / file
-                    if self.should_include_file(filepath):
-                        ext = filepath.suffix if filepath.suffix else 'no extension'
-                        file_counts[ext] = file_counts.get(ext, 0) + 1
-                        total_files += 1
-            
-            for ext, count in sorted(file_counts.items()):
-                f.write(f'{ext}: {count} file(s)\n')
-            
-            f.write(f'\nTotal files: {total_files}\n')
-        
+            f.write(text)
         print(f'✓ Structure file created: {output_file}')
         return output_file
-    
-    def combine_files(self):
-        """Combine all project files into a single file."""
-        output_file = self.output_dir / COMBINED_NAME
-        
+
+    def collect_files(self):
+        """Files to combine, in output order: README first, other .md, .py, then the rest."""
         files_to_combine = []
-        
+
         # Collect all files
         for root, dirs, files in os.walk(self.project_root):
             # Remove ignored directories from search (uses glob matching)
@@ -213,7 +223,7 @@ class ProjectCombiner:
                 filepath = Path(root) / file
                 if self.should_include_file(filepath):
                     files_to_combine.append(filepath)
-        
+
         # Sort files: documentation first, then Python files, then others
         def sort_key(filepath):
             name = filepath.name.lower()
@@ -225,41 +235,52 @@ class ProjectCombiner:
                 return (2, str(filepath))
             else:
                 return (3, str(filepath))
-        
+
         files_to_combine.sort(key=sort_key)
-        
-        # Write combined file
+        return files_to_combine
+
+    @staticmethod
+    def read_text(filepath):
+        """A file's text as written into the combined file (universal newlines; placeholder if not UTF-8)."""
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return content if content.endswith('\n') else content + '\n'
+        except UnicodeDecodeError:
+            return '[Binary file - cannot display content]\n'
+        except Exception as e:
+            return f'[Error reading file: {e}]\n'
+
+    def render_combined(self, generated=None, files=None):
+        """Text of COMBINED_PROJECT.txt (generated: time stamp string, default now)."""
+        generated = generated or self.timestamp()
+        files_to_combine = self.collect_files() if files is None else files
+        n = len(files_to_combine)
+        out = ['=' * 80 + '\n',
+               f'COMBINED PROJECT: {self.project_root.name}\n',
+               f'Generated: {generated}\n',
+               f'Total files: {n}\n',
+               '=' * 80 + '\n\n']
+        for i, filepath in enumerate(files_to_combine, 1):
+            relative_path = self.get_relative_path(filepath)
+            out.append('\n' + '=' * 80 + '\n')
+            out.append(f'FILE {i}/{n}: {relative_path}\n')
+            out.append('=' * 80 + '\n\n')
+            out.append(self.read_text(filepath))
+            out.append('\n')
+        return ''.join(out)
+
+    def combine_files(self, generated=None):
+        """Combine all project files into a single file."""
+        output_file = self.output_dir / COMBINED_NAME
+        files_to_combine = self.collect_files()
+        text = self.render_combined(generated, files_to_combine)
         with open(output_file, 'w', encoding='utf-8') as out:
-            out.write('=' * 80 + '\n')
-            out.write(f'COMBINED PROJECT: {self.project_root.name}\n')
-            out.write(f'Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
-            out.write(f'Total files: {len(files_to_combine)}\n')
-            out.write('=' * 80 + '\n\n')
-            
-            for i, filepath in enumerate(files_to_combine, 1):
-                relative_path = self.get_relative_path(filepath)
-                
-                out.write('\n' + '=' * 80 + '\n')
-                out.write(f'FILE {i}/{len(files_to_combine)}: {relative_path}\n')
-                out.write('=' * 80 + '\n\n')
-                
-                try:
-                    with open(filepath, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                        out.write(content)
-                        if not content.endswith('\n'):
-                            out.write('\n')
-                except UnicodeDecodeError:
-                    out.write(f'[Binary file - cannot display content]\n')
-                except Exception as e:
-                    out.write(f'[Error reading file: {e}]\n')
-                
-                out.write('\n')
-        
+            out.write(text)
         print(f'✓ Combined file created: {output_file}')
         print(f'  Contains {len(files_to_combine)} files')
         return output_file
-    
+
     def run(self):
         """Run the combiner to create both output files."""
         print(f'\nCombining project: {self.project_root.name}')
