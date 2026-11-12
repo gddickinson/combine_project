@@ -44,15 +44,18 @@ export function fnmatch(name, pattern) {
 // --- rules ----------------------------------------------------------------------------------------------------------
 const baseName = p => p.slice(p.lastIndexOf('/') + 1);
 const matchesIgnore = (name, R) => R.ignore_dirs.some(p => fnmatch(name, p));
+const isHidden = (name, R) => name.startsWith('.') && !R.hidden_allowed.includes(name);
+// A folder skipped with everything inside (ProjectCombiner._skip_dir): ignore_dirs pattern or hidden.
+export const skipDir = (name, R) => matchesIgnore(name, R) || isHidden(name, R);
 
 // ProjectCombiner.should_ignore (default output_dir = project root, so outputs are root-level names).
 export function shouldIgnore(path, isDir, R) {
   const parts = path.split('/'), name = parts[parts.length - 1];
   if (parts.length === 1 && R.output_names.includes(name)) return true;
-  for (const part of parts.slice(0, -1)) if (matchesIgnore(part, R)) return true;
+  for (const part of parts.slice(0, -1)) if (skipDir(part, R)) return true;
   if (isDir && matchesIgnore(name, R)) return true;
-  if (R.ignore_extensions.includes(suffix(name))) return true;
-  if (name.startsWith('.') && !R.hidden_allowed.includes(name)) return true;
+  if (!isDir && R.ignore_extensions.includes(suffix(name))) return true;  // files only: lib.so/ is a normal folder
+  if (isHidden(name, R)) return true;
   return false;
 }
 
@@ -104,7 +107,7 @@ export function plan(name, files, dirs, R) {
   };
   walk('', '');
 
-  // os.walk prunes directories matching ignore_dirs; should_ignore checks the same parents, so filtering is enough
+  // os.walk prunes ignored and hidden directories; should_ignore checks the same parents, so filtering is enough
   const included = files.filter(f => shouldIncludeFile(f, R));
   const keyed = included.map(p => [sortKey(p, R), p]);
   keyed.sort((a, b) => a[0] - b[0] || cmpCodepoints(a[1], b[1]));

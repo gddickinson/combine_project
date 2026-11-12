@@ -59,6 +59,14 @@ class ProjectCombiner:
                 return True
         return False
 
+    def _is_hidden(self, name):
+        """Hidden (dot) name that is not explicitly allowed."""
+        return name.startswith('.') and name not in self.hidden_allowed
+
+    def _skip_dir(self, name):
+        """A folder that is skipped with everything inside: an ignore_dirs pattern or a hidden folder."""
+        return self._matches_ignore_pattern(name) or self._is_hidden(name)
+
     def _relative_to_root(self, path):
         """Path relative to the project root (resolving the parent, so /var vs /private/var etc. agree), or None."""
         try:
@@ -88,19 +96,19 @@ class ProjectCombiner:
         # project root, e.g. ~/build/myproject, do not count)
         rel = self._relative_to_root(path)
         for parent in (rel if rel is not None else path).parents:
-            if self._matches_ignore_pattern(parent.name):
+            if self._skip_dir(parent.name):
                 return True
 
         # Check if directory itself should be ignored
         if path.is_dir() and self._matches_ignore_pattern(path.name):
             return True
         
-        # Check file extension
-        if path.suffix in self.ignore_extensions:
+        # Check file extension (files only: a folder such as lib.so/ is a normal folder)
+        if not path.is_dir() and path.suffix in self.ignore_extensions:
             return True
         
         # Check if it's a hidden file (starting with .)
-        if path.name.startswith('.') and path.name not in self.hidden_allowed:
+        if self._is_hidden(path.name):
             return True
         
         return False
@@ -171,8 +179,8 @@ class ProjectCombiner:
         """{extension or 'no extension': count} over the files that would be combined."""
         file_counts = {}
         for root, dirs, files in os.walk(self.project_root):
-            # Remove ignored directories from search (uses glob matching)
-            dirs[:] = [d for d in dirs if not self._matches_ignore_pattern(d)]
+            # Remove ignored and hidden directories from search (glob matching)
+            dirs[:] = [d for d in dirs if not self._skip_dir(d)]
 
             for file in files:
                 filepath = Path(root) / file
@@ -216,8 +224,8 @@ class ProjectCombiner:
 
         # Collect all files
         for root, dirs, files in os.walk(self.project_root):
-            # Remove ignored directories from search (uses glob matching)
-            dirs[:] = [d for d in dirs if not self._matches_ignore_pattern(d)]
+            # Remove ignored and hidden directories from search (glob matching)
+            dirs[:] = [d for d in dirs if not self._skip_dir(d)]
 
             for file in sorted(files):
                 filepath = Path(root) / file

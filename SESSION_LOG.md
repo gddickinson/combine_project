@@ -16,6 +16,7 @@
 - Web interface (FastAPI, port 8151) + GitHub Pages static site. The tool itself runs in the browser
   (`web/static/combine_engine.js`), byte-for-byte equal to the Python on `web/fixture_tree.py` (node tests), and on a
   copy of this repo picked through the real folder input in Chrome (Playwright).
-- Left as is, for George to decide: files inside hidden folders (e.g. `.github/`) are combined but the folder is not
-  shown in the tree; a folder whose name ends in an ignored extension (e.g. `lib.so/`) is hidden in the tree but its
-  files are combined. The web port copies both behaviours and documents them on the Rules page.
+- Fixed (George's decision): the tree and the combined file now follow the same rules. Hidden folders (e.g.
+  `.github/`) are skipped with everything inside (previously their files were combined but the folder was missing
+  from the tree); ignored extensions apply to files only, so a folder such as `lib.so/` is a normal folder (previously
+  hidden in the tree while its files were combined). Python and JS changed together; fixture regenerated.

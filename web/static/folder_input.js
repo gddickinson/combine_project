@@ -1,10 +1,8 @@
 // Turn a picked or dropped folder into { name, files: [{ path, file }], dirs: [path] } with paths relative to the
 // folder. Nothing is uploaded: File objects stay in the page and only the files that will be combined are read.
-// Directories matching an ignore_dirs pattern are skipped while walking (Python's os.walk prunes them too, and the
+// Ignored and hidden directories are skipped while walking (Python's os.walk prunes them too, and the
 // tree never shows them), so a dropped project with node_modules or .venv stays quick.
-import { fnmatch } from './combine_engine.js';
-
-const ignoredDir = (name, rules) => rules.ignore_dirs.some(p => fnmatch(name, p));
+import { skipDir as ignoredDir } from './combine_engine.js';
 
 // <input type="file" webkitdirectory>: webkitRelativePath is "root/sub/file". Empty folders are not reported.
 export function fromFileList(list, rules) {

@@ -16,7 +16,7 @@ python combine_project.py /path/to/project --output ./combined_output</pre>
   <h2>This web version</h2>
   <p>The combining runs in the browser in <code>web/static/combine_engine.js</code>, a port of
     <code>ProjectCombiner</code>. A node test builds a test tree that hits every rule (CRLF and CR line endings, a byte-order
-    mark, a non-UTF-8 <code>.py</code>, empty files, hidden and ignored folders, Unicode names, a stale output file) and
+    mark, a non-UTF-8 <code>.py</code>, empty files, hidden and ignored folders, a folder named <code>lib.so</code>, Unicode names, a stale output file) and
     requires both files to equal the Python output byte for byte. The only difference in the text is the time stamp,
     which is the moment you click.</p>
   ${isStatic() ? '' : '<p class="callout a">You are running the local app. It serves the same page; your files are still read only by the browser.</p>'}

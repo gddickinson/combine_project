@@ -157,5 +157,31 @@ class TestOutputFilesNotCombined(unittest.TestCase):
         self.assertTrue(combiner.should_include_file(root / "docs" / "COMBINED_PROJECT.txt"))
 
 
+class TestTreeAndCombinedAgree(unittest.TestCase):
+    """The tree and the combined file follow the same rules for hidden folders and dotted folder names."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp()) / "proj"
+        (self.root / ".github" / "workflows").mkdir(parents=True)
+        (self.root / ".github" / "workflows" / "ci.yml").write_text("on: push\n")
+        (self.root / "lib.so").mkdir()
+        (self.root / "lib.so" / "inner.py").write_text("x = 1\n")
+        (self.root / "main.py").write_text("y = 2\n")
+        self.c = ProjectCombiner(self.root, output_dir=tempfile.mkdtemp())
+
+    def test_hidden_folder_excluded_everywhere(self):
+        combined = self.c.render_combined("t")
+        self.assertNotIn(".github", combined)
+        self.assertNotIn(".github", self.c.render_structure("t"))
+        self.assertFalse(self.c.should_include_file(self.root / ".github" / "workflows" / "ci.yml"))
+
+    def test_folder_with_ignored_extension_is_a_normal_folder(self):
+        structure = self.c.render_structure("t")
+        self.assertIn("├── lib.so/", structure)
+        self.assertIn("inner.py", structure)
+        self.assertIn("FILE 1/2: lib.so/inner.py", self.c.render_combined("t"))
+        self.assertIn("Total files: 2", structure)
+
+
 if __name__ == "__main__":
     unittest.main()

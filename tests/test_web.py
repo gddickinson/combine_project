@@ -81,15 +81,16 @@ def test_demo_matches_fixture():
     d = client.get("/api/demo").json()
     saved = json.loads((ROOT / "tests" / "fixtures" / "combine_fixture.json").read_text(encoding="utf-8"))
     assert d["combined"] == saved["combined"] and d["structure"] == saved["structure"]
-    assert "FILE 25/25: src/pkg/Makefile" in d["combined"]
+    assert "FILE 24/24: src/pkg/Makefile" in d["combined"]
 
 
 def test_fixture_covers_the_rules():
     s = json.loads((ROOT / "tests" / "fixtures" / "combine_fixture.json").read_text(encoding="utf-8"))
     combined, structure = s["combined"], s["structure"]
     for skipped in ("build/out.py", "venv/lib.py", ".venv/lib.py", "foo.egg-info", "mod.pyc", ".secret",
-                    "image.png", "notes.TXT", "FILE 1/25: COMBINED_PROJECT.txt"):
+                    "image.png", "notes.TXT", "COMBINED_PROJECT.txt", ".github"):
         assert skipped not in combined, skipped
     assert "[Binary file - cannot display content]" in combined
     assert "\r" not in combined and "﻿# UTF-8 BOM kept" in combined
     assert "├── empty_dir/" in structure and "image.png" in structure and ".secret" not in structure
+    assert ".github" not in structure and "├── lib.so/" in structure and "lib.so/inner.py" in combined

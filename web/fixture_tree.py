@@ -32,7 +32,7 @@ FILES = {
     ".env.example": b"KEY=\n",
     ".secret": b"hidden\n",
     ".DS_Store": b"\x00\x01",
-    ".github/workflows/ci.yml": b"on: push\n",
+    ".github/workflows/ci.yml": b"on: push\n",  # hidden folder: skipped (tree and combined file)
     "docs/guide.md": b"Guide without trailing newline",
     "docs/README.txt": b"A README anywhere sorts first.\n",
     "docs/PROJECT_STRUCTURE.txt": b"same name as an output, but not in the output folder: included\n",
@@ -43,7 +43,7 @@ FILES = {
     "src/pkg/Makefile": b"sub:\n\ttrue\n",
     "src/binary.py": b"\x80\x81\x82\xff not UTF-8",
     "src/mod.pyc": b"\x00",
-    "lib.so/inner.py": b"# directory with an ignored suffix: hidden in the tree, still combined\n",
+    "lib.so/inner.py": b"# a folder named like an ignored extension is a normal folder\n",
     "foo.egg-info/PKG-INFO": b"Metadata\n",
     "build/out.py": b"# ignored directory\n",
     "node_modules/x/index.json": b"{}\n",

@@ -8,7 +8,7 @@ A utility that combines all files in a Python project into a single text file fo
 - **Structure generation** -- creates a `PROJECT_STRUCTURE.txt` with tree view and file statistics
 - **Smart filtering**:
   - Includes: `.py`, `.md`, `.txt`, `.yml`, `.yaml`, `.json`, `.toml`, `.cfg`, `.ini`, `.rst`, `.sh`
-  - Excludes: `__pycache__`, `.git`, `node_modules`, `venv`, binary files, hidden files
+  - Excludes: `__pycache__`, `.git`, `node_modules`, `venv`, binary files, hidden files and hidden folders
 - **Sorted output** -- documentation files first, then Python files, then others
 - **CLI interface** with configurable project root and output directory
 
