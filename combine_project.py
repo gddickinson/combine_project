@@ -9,6 +9,11 @@ import os
 from pathlib import Path
 from datetime import datetime
 
+# Names of the two files this tool writes (into output_dir)
+COMBINED_NAME = 'COMBINED_PROJECT.txt'
+STRUCTURE_NAME = 'PROJECT_STRUCTURE.txt'
+OUTPUT_NAMES = (COMBINED_NAME, STRUCTURE_NAME)
+
 
 class ProjectCombiner:
     def __init__(self, project_root='.', output_dir=None):
@@ -48,12 +53,35 @@ class ProjectCombiner:
                 return True
         return False
 
+    def _relative_to_root(self, path):
+        """Path relative to the project root (resolving the parent, so /var vs /private/var etc. agree), or None."""
+        try:
+            return path.parent.resolve().joinpath(path.name).relative_to(self.project_root)
+        except (ValueError, OSError):
+            return None
+
+    def is_output_file(self, path):
+        """True for this tool's own output files (COMBINED_PROJECT.txt, PROJECT_STRUCTURE.txt in output_dir)."""
+        path = Path(path)
+        if path.name not in OUTPUT_NAMES:
+            return False
+        try:
+            return path.parent.resolve() == self.output_dir.resolve()
+        except OSError:
+            return False
+
     def should_ignore(self, path):
         """Check if a path should be ignored."""
         path = Path(path)
 
-        # Check if any parent directory should be ignored
-        for parent in path.parents:
+        # The tool's own output files are never inputs (else a re-run combines the previous output)
+        if self.is_output_file(path):
+            return True
+
+        # Check if any parent directory inside the project should be ignored (folders above the
+        # project root, e.g. ~/build/myproject, do not count)
+        rel = self._relative_to_root(path)
+        for parent in (rel if rel is not None else path).parents:
             if self._matches_ignore_pattern(parent.name):
                 return True
 
@@ -130,7 +158,7 @@ class ProjectCombiner:
     
     def create_structure_file(self):
         """Create a file with the project structure."""
-        output_file = self.output_dir / 'PROJECT_STRUCTURE.txt'
+        output_file = self.output_dir / STRUCTURE_NAME
         
         tree_lines = self.generate_tree_structure(self.project_root)
         
@@ -172,7 +200,7 @@ class ProjectCombiner:
     
     def combine_files(self):
         """Combine all project files into a single file."""
-        output_file = self.output_dir / 'COMBINED_PROJECT.txt'
+        output_file = self.output_dir / COMBINED_NAME
         
         files_to_combine = []
         

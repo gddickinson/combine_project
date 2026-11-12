@@ -1,5 +1,7 @@
 """Tests for combine_project.py using temporary directory structures."""
 
+import contextlib
+import io
 import os
 import tempfile
 import unittest
@@ -110,6 +112,49 @@ class TestEggInfoGlobPattern(unittest.TestCase):
         result = combiner.should_ignore(Path(egg_dir))
         # After fix: glob matching via fnmatch, so '*.egg-info' matches 'foo.egg-info'.
         self.assertTrue(result)
+
+
+class TestProjectInsideIgnoredNamedFolder(unittest.TestCase):
+    """Folders ABOVE the project root must not trigger the ignore rules (e.g. a project kept under ~/build/)."""
+
+    def test_project_under_build_folder_is_combined(self):
+        root = Path(tempfile.mkdtemp()) / "build" / "proj"
+        (root / "src").mkdir(parents=True)
+        (root / "main.py").write_text("x = 1\n")
+        (root / "src" / "util.py").write_text("y = 2\n")
+        combiner = ProjectCombiner(root, output_dir=tempfile.mkdtemp())
+        content = combiner.combine_files().read_text()
+        self.assertIn("Total files: 2", content)
+        self.assertIn("FILE 2/2: src/util.py", content)
+        self.assertFalse(combiner.should_ignore(root / "main.py"))
+        tree = combiner.generate_tree_structure(combiner.project_root)
+        self.assertIn("├── src/", tree)
+
+
+class TestOutputFilesNotCombined(unittest.TestCase):
+    """The tool's own output files (written into the project root by default) must not be fed back in."""
+
+    def test_rerun_does_not_include_previous_outputs(self):
+        root = Path(tempfile.mkdtemp()) / "proj"
+        root.mkdir()
+        (root / "main.py").write_text("x = 1\n")
+        with contextlib.redirect_stdout(io.StringIO()):
+            ProjectCombiner(root).run()
+            ProjectCombiner(root).run()
+        combined = (root / "COMBINED_PROJECT.txt").read_text()
+        structure = (root / "PROJECT_STRUCTURE.txt").read_text()
+        self.assertIn("Total files: 1", combined)
+        self.assertNotIn("FILE 2/", combined)
+        self.assertNotIn("PROJECT_STRUCTURE.txt", structure.split("FILE SUMMARY")[0])
+        self.assertNotIn("COMBINED_PROJECT.txt", structure)
+        self.assertIn("Total files: 1", structure)
+
+    def test_same_names_elsewhere_still_included(self):
+        root = Path(tempfile.mkdtemp()) / "proj"
+        (root / "docs").mkdir(parents=True)
+        (root / "docs" / "COMBINED_PROJECT.txt").write_text("kept\n")
+        combiner = ProjectCombiner(root, output_dir=tempfile.mkdtemp())
+        self.assertTrue(combiner.should_include_file(root / "docs" / "COMBINED_PROJECT.txt"))
 
 
 if __name__ == "__main__":
