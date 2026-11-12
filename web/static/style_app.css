@@ -1,0 +1,32 @@
+/* Project Combiner: accent palette and page styles (theme in style.css). */
+:root { --accent:#ffb347; --accent2:#b28cff; --accent3:#5ce1e6; --glow:rgba(255,179,71,.13); }
+button, .btn, .seg button.on { color:#1a1004; }
+.two > *, .side > *, .row > * { min-width:0; }
+.hero .btn { margin-right:10px; }
+
+/* folder picker */
+.drop { border:2px dashed var(--line); border-radius:8px; padding:26px 20px; text-align:center; transition:border-color .15s, background .15s; }
+.drop.over { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 7%, transparent); }
+.drop p { margin:6px auto; }
+.drop .pick { display:inline-block; }
+.drop input[type=file] { position:absolute; width:1px; height:1px; opacity:0; }
+.drop label.btn { color:#1a1004; font:600 13px var(--mono); margin:10px 8px 0 0; }
+.drop input[type=file]:focus-visible + label { outline:2px solid var(--accent3); outline-offset:2px; }
+.privacy { font-size:13px; color:var(--accent3); }
+
+/* results */
+.status { font:13px var(--mono); color:var(--mute); min-height:1.6em; }
+.actions { display:flex; flex-wrap:wrap; gap:0 4px; align-items:center; }
+.actions .label { font:12px var(--mono); color:var(--mute); margin:10px 8px 0 0; text-transform:uppercase; letter-spacing:.08em; }
+.preview { max-height:560px; overflow:auto; white-space:pre; margin-top:10px; }
+.verdict { font:13px var(--mono); }
+.files td { font:12.5px var(--mono); }
+.files td.n { text-align:right; color:var(--mute); }
+.rule-list { display:flex; flex-wrap:wrap; gap:4px; margin:6px 0 12px; }
+.quirk { font-size:14px; }
+.quirk code { color:var(--accent); }
+
+@media (max-width:760px) {
+  .preview { max-height:420px; font-size:12px; }
+  .drop { padding:18px 12px; }
+}

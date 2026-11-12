@@ -53,6 +53,41 @@ FILE 1/12: README.md
 ...
 ```
 
+## Web version (runs in your browser)
+
+**https://gddickinson.github.io/combine_project/** is the same tool as a web page: choose a project folder (or drag it
+in) and download or copy `COMBINED_PROJECT.txt` and `PROJECT_STRUCTURE.txt`. The files are read by the browser only:
+nothing is uploaded. `web/static/combine_engine.js` is a port of `ProjectCombiner` with the same include/exclude rules
+(taken from the Python class at build time), order and formatting; node tests require its output to equal the Python
+output **byte for byte** on a test tree that exercises every rule (`web/fixture_tree.py`; CRLF/CR line endings, a BOM,
+non-UTF-8 `.py`, hidden and ignored folders, Unicode names, a stale output file). The "Try the test tree" button
+repeats that check live. Browser limits: no symbolic links, and empty folders only appear when the folder is dragged in.
+
+### Run the web app
+
+```bash
+pip install -r requirements-web.txt   # Python 3.11+ for the web app; the CLI itself has no dependencies
+python run_web.py                     # http://127.0.0.1:8151 (local only)
+```
+
+Pages: **Combine** (pick/drop a folder, preview, download, copy), **Rules** (what is included and skipped, read from
+`ProjectCombiner`), **About**.
+
+### Static site (GitHub Pages)
+
+`python scripts/build_static.py --out site` exports the front end and the API answers (rules, test tree with its
+Python output); `.github/workflows/pages.yml` publishes it on every push to main (Settings → Pages → Source: GitHub
+Actions).
+
+Tests: `python -m pytest -q` (CLI tests, API, static build, fixture is current, node tests of the JS port);
+regenerate the fixture with `python scripts/make_combine_fixture.py`; smoke test and screenshots:
+`python scripts/screenshots.py --static "" combine rules about`.
+
+![Home](docs/img/home.png)
+![The test tree, identical to the Python output](docs/img/combine_demo.png)
+![Included files](docs/img/combine_files.png)
+![Rules](docs/img/rules.png)
+
 ## Project Structure
 
 ```

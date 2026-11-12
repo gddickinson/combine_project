@@ -1,0 +1,238 @@
+{
+ "tree": {
+  "name": "fixture_proj",
+  "files": [
+   {
+    "path": ".DS_Store",
+    "b64": "AAE="
+   },
+   {
+    "path": ".env.example",
+    "b64": "S0VZPQo="
+   },
+   {
+    "path": ".github/workflows/ci.yml",
+    "b64": "b246IHB1c2gK"
+   },
+   {
+    "path": ".gitignore",
+    "b64": "Ki5weWMK"
+   },
+   {
+    "path": ".secret",
+    "b64": "aGlkZGVuCg=="
+   },
+   {
+    "path": ".venv/lib.py",
+    "b64": "IyBpZ25vcmVkIGRpcmVjdG9yeQo="
+   },
+   {
+    "path": "B_upper.py",
+    "b64": "cHJpbnQoJ3VwcGVyLWNhc2UgbmFtZXMgc29ydCBiZWZvcmUgbG93ZXItY2FzZScpCg=="
+   },
+   {
+    "path": "COMBINED_PROJECT.txt",
+    "b64": "b3V0cHV0IG9mIGFuIGVhcmxpZXIgcnVuOiBuZXZlciBhbiBpbnB1dAo="
+   },
+   {
+    "path": "Dockerfile",
+    "b64": "RlJPTSBweXRob246My4xMgo="
+   },
+   {
+    "path": "LICENSE",
+    "b64": "TUlUCg=="
+   },
+   {
+    "path": "Makefile",
+    "b64": "YWxsOgoJZWNobyBtYWtlCg=="
+   },
+   {
+    "path": "README.md",
+    "b64": "IyBGaXh0dXJlIHByb2plY3QNCldpbmRvd3MgbGluZSBlbmRpbmdzIChDUkxGKSBiZWNvbWUgTEYuDQo="
+   },
+   {
+    "path": "a_lower.py",
+    "b64": "eCA9IDE="
+   },
+   {
+    "path": "build/out.py",
+    "b64": "IyBpZ25vcmVkIGRpcmVjdG9yeQo="
+   },
+   {
+    "path": "café.md",
+    "b64": "VW5pY29kZSBmaWxlIG5hbWUgYW5kIGNvbnRlbnQ6IGNhZsOpIOKGkiDinJMK"
+   },
+   {
+    "path": "config.yaml",
+    "b64": "a2V5OiB2YWx1ZQo="
+   },
+   {
+    "path": "data.json",
+    "b64": "eyJhIjogMX0K"
+   },
+   {
+    "path": "docs/PROJECT_STRUCTURE.txt",
+    "b64": "c2FtZSBuYW1lIGFzIGFuIG91dHB1dCwgYnV0IG5vdCBpbiB0aGUgb3V0cHV0IGZvbGRlcjogaW5jbHVkZWQK"
+   },
+   {
+    "path": "docs/README.txt",
+    "b64": "QSBSRUFETUUgYW55d2hlcmUgc29ydHMgZmlyc3QuCg=="
+   },
+   {
+    "path": "docs/guide.md",
+    "b64": "R3VpZGUgd2l0aG91dCB0cmFpbGluZyBuZXdsaW5l"
+   },
+   {
+    "path": "docs/venv",
+    "b64": "YSBGSUxFIGNhbGxlZCB2ZW52IGlzIG5vdCBhbiBpZ25vcmVkIGRpcmVjdG9yeQo="
+   },
+   {
+    "path": "empty.txt",
+    "b64": ""
+   },
+   {
+    "path": "foo.egg-info/PKG-INFO",
+    "b64": "TWV0YWRhdGEK"
+   },
+   {
+    "path": "image.png",
+    "b64": "iVBORw0KGgoAAA=="
+   },
+   {
+    "path": "lib.so/inner.py",
+    "b64": "IyBkaXJlY3Rvcnkgd2l0aCBhbiBpZ25vcmVkIHN1ZmZpeDogaGlkZGVuIGluIHRoZSB0cmVlLCBzdGlsbCBjb21iaW5lZAo="
+   },
+   {
+    "path": "node_modules/x/index.json",
+    "b64": "e30K"
+   },
+   {
+    "path": "notes.TXT",
+    "b64": "dXBwZXItY2FzZSBleHRlbnNpb246IHNob3duIGluIHRoZSB0cmVlLCBub3QgY29tYmluZWQK"
+   },
+   {
+    "path": "pyproject.toml",
+    "b64": "W3Byb2plY3RdCm5hbWUgPSAnZml4dHVyZScK"
+   },
+   {
+    "path": "requirements",
+    "b64": "bnVtcHkK"
+   },
+   {
+    "path": "run.sh",
+    "b64": "IyEvYmluL3NoCmVjaG8gaGkK"
+   },
+   {
+    "path": "setup.cfg",
+    "b64": "W21ldGFkYXRhXQo="
+   },
+   {
+    "path": "src/binary.py",
+    "b64": "gIGC/yBub3QgVVRGLTg="
+   },
+   {
+    "path": "src/mod.pyc",
+    "b64": "AA=="
+   },
+   {
+    "path": "src/pkg/Makefile",
+    "b64": "c3ViOgoJdHJ1ZQo="
+   },
+   {
+    "path": "src/pkg/__init__.py",
+    "b64": ""
+   },
+   {
+    "path": "src/pkg/__pycache__/core.cpython-312.pyc",
+    "b64": "AAFieXRlY29kZQ=="
+   },
+   {
+    "path": "src/pkg/core.py",
+    "b64": "77u/IyBVVEYtOCBCT00ga2VwdA1vbGQgTWFjIGxpbmUgZW5kaW5nDQpkZWYgZigpOgogICAgcmV0dXJuIDEK"
+   },
+   {
+    "path": "venv/lib.py",
+    "b64": "IyBpZ25vcmVkIGRpcmVjdG9yeQo="
+   },
+   {
+    "path": "z.py",
+    "b64": "IyBwcml2YXRlLXVzZSBCTVAgY2hhcmFjdGVyIGluIHRoZSBuYW1lCg=="
+   },
+   {
+    "path": "z😀.py",
+    "b64": "IyBhc3RyYWwgY2hhcmFjdGVyIGluIHRoZSBuYW1lIChzb3J0cyBhZnRlciBVK0UwMDAgYnkgY29kZSBwb2ludCkK"
+   }
+  ],
+  "dirs": [
+   "empty_dir",
+   "src/empty_sub"
+  ]
+ },
+ "generated": "2026-01-02 03:04:05",
+ "rules": {
+  "ignore_dirs": [
+   "*.egg-info",
+   ".git",
+   ".hg",
+   ".idea",
+   ".mypy_cache",
+   ".pytest_cache",
+   ".svn",
+   ".tox",
+   ".venv",
+   ".vscode",
+   "__pycache__",
+   "build",
+   "dist",
+   "env",
+   "node_modules",
+   "venv"
+  ],
+  "ignore_extensions": [
+   ".DS_Store",
+   ".class",
+   ".dll",
+   ".dylib",
+   ".o",
+   ".obj",
+   ".pyc",
+   ".pyd",
+   ".pyo",
+   ".so"
+  ],
+  "include_extensions": [
+   ".cfg",
+   ".ini",
+   ".json",
+   ".md",
+   ".py",
+   ".rst",
+   ".sh",
+   ".toml",
+   ".txt",
+   ".yaml",
+   ".yml"
+  ],
+  "include_names": [
+   "Dockerfile",
+   "LICENSE",
+   "Makefile",
+   "requirements"
+  ],
+  "hidden_allowed": [
+   ".env.example",
+   ".gitignore"
+  ],
+  "output_names": [
+   "COMBINED_PROJECT.txt",
+   "PROJECT_STRUCTURE.txt"
+  ],
+  "readme_names": [
+   "readme",
+   "readme.md",
+   "readme.txt"
+  ]
+ },
+ "combined": "================================================================================\nCOMBINED PROJECT: fixture_proj\nGenerated: 2026-01-02 03:04:05\nTotal files: 25\n================================================================================\n\n\n================================================================================\nFILE 1/25: README.md\n================================================================================\n\n# Fixture project\nWindows line endings (CRLF) become LF.\n\n\n================================================================================\nFILE 2/25: docs/README.txt\n================================================================================\n\nA README anywhere sorts first.\n\n\n================================================================================\nFILE 3/25: café.md\n================================================================================\n\nUnicode file name and content: café → ✓\n\n\n================================================================================\nFILE 4/25: docs/guide.md\n================================================================================\n\nGuide without trailing newline\n\n\n================================================================================\nFILE 5/25: B_upper.py\n================================================================================\n\nprint('upper-case names sort before lower-case')\n\n\n================================================================================\nFILE 6/25: a_lower.py\n================================================================================\n\nx = 1\n\n\n================================================================================\nFILE 7/25: lib.so/inner.py\n================================================================================\n\n# directory with an ignored suffix: hidden in the tree, still combined\n\n\n================================================================================\nFILE 8/25: src/binary.py\n================================================================================\n\n[Binary file - cannot display content]\n\n\n================================================================================\nFILE 9/25: src/pkg/__init__.py\n================================================================================\n\n\n\n\n================================================================================\nFILE 10/25: src/pkg/core.py\n================================================================================\n\n﻿# UTF-8 BOM kept\nold Mac line ending\ndef f():\n    return 1\n\n\n================================================================================\nFILE 11/25: z.py\n================================================================================\n\n# private-use BMP character in the name\n\n\n================================================================================\nFILE 12/25: z😀.py\n================================================================================\n\n# astral character in the name (sorts after U+E000 by code point)\n\n\n================================================================================\nFILE 13/25: .github/workflows/ci.yml\n================================================================================\n\non: push\n\n\n================================================================================\nFILE 14/25: Dockerfile\n================================================================================\n\nFROM python:3.12\n\n\n================================================================================\nFILE 15/25: LICENSE\n================================================================================\n\nMIT\n\n\n================================================================================\nFILE 16/25: Makefile\n================================================================================\n\nall:\n\techo make\n\n\n================================================================================\nFILE 17/25: config.yaml\n================================================================================\n\nkey: value\n\n\n================================================================================\nFILE 18/25: data.json\n================================================================================\n\n{\"a\": 1}\n\n\n================================================================================\nFILE 19/25: docs/PROJECT_STRUCTURE.txt\n================================================================================\n\nsame name as an output, but not in the output folder: included\n\n\n================================================================================\nFILE 20/25: empty.txt\n================================================================================\n\n\n\n\n================================================================================\nFILE 21/25: pyproject.toml\n================================================================================\n\n[project]\nname = 'fixture'\n\n\n================================================================================\nFILE 22/25: requirements\n================================================================================\n\nnumpy\n\n\n================================================================================\nFILE 23/25: run.sh\n================================================================================\n\n#!/bin/sh\necho hi\n\n\n================================================================================\nFILE 24/25: setup.cfg\n================================================================================\n\n[metadata]\n\n\n================================================================================\nFILE 25/25: src/pkg/Makefile\n================================================================================\n\nsub:\n\ttrue\n\n",
+ "structure": "================================================================================\nPROJECT STRUCTURE: fixture_proj\nGenerated: 2026-01-02 03:04:05\n================================================================================\n\nfixture_proj/\n├── docs/\n│   ├── PROJECT_STRUCTURE.txt\n│   ├── README.txt\n│   ├── guide.md\n│   └── venv\n├── empty_dir/\n├── src/\n│   ├── empty_sub/\n│   ├── pkg/\n│   │   ├── Makefile\n│   │   ├── __init__.py\n│   │   └── core.py\n│   └── binary.py\n├── .env.example\n├── .gitignore\n├── B_upper.py\n├── Dockerfile\n├── LICENSE\n├── Makefile\n├── README.md\n├── a_lower.py\n├── café.md\n├── config.yaml\n├── data.json\n├── empty.txt\n├── image.png\n├── notes.TXT\n├── pyproject.toml\n├── requirements\n├── run.sh\n├── setup.cfg\n├── z.py\n└── z😀.py\n\n================================================================================\nFILE SUMMARY\n================================================================================\n\n.cfg: 1 file(s)\n.json: 1 file(s)\n.md: 3 file(s)\n.py: 8 file(s)\n.sh: 1 file(s)\n.toml: 1 file(s)\n.txt: 3 file(s)\n.yaml: 1 file(s)\n.yml: 1 file(s)\nno extension: 5 file(s)\n\nTotal files: 25\n"
+}
